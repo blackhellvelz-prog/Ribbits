@@ -24,35 +24,35 @@ public class ItemModule {
     @AutoRegister("ribbit_nitwit_spawn_egg")
     public static final AutoRegisterItem RIBBIT_NITWIT_SPAWN_EGG = AutoRegisterItem.of(
             () -> new RibbitSpawnEggItem(RibbitProfessionModule.NITWIT,
-                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_nitwit_spawn_egg"))
+                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_nitwit_spawn_egg")).spawnEgg(EntityTypeModule.RIBBIT.get())
             )
     );
 
     @AutoRegister("ribbit_fisherman_spawn_egg")
     public static final AutoRegisterItem RIBBIT_FISHERMAN_SPAWN_EGG = AutoRegisterItem.of(
             () -> new RibbitSpawnEggItem(RibbitProfessionModule.FISHERMAN,
-                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_fisherman_spawn_egg"))
+                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_fisherman_spawn_egg")).spawnEgg(EntityTypeModule.RIBBIT.get())
             )
     );
 
     @AutoRegister("ribbit_gardener_spawn_egg")
     public static final AutoRegisterItem RIBBIT_GARDENER_SPAWN_EGG = AutoRegisterItem.of(
             () -> new RibbitSpawnEggItem(RibbitProfessionModule.GARDENER,
-                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_gardener_spawn_egg"))
+                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_gardener_spawn_egg")).spawnEgg(EntityTypeModule.RIBBIT.get())
             )
     );
 
     @AutoRegister("ribbit_merchant_spawn_egg")
     public static final AutoRegisterItem RIBBIT_MERCHANT_SPAWN_EGG = AutoRegisterItem.of(
             () -> new RibbitSpawnEggItem(RibbitProfessionModule.MERCHANT,
-                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_merchant_spawn_egg"))
+                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_merchant_spawn_egg")).spawnEgg(EntityTypeModule.RIBBIT.get())
             )
     );
 
     @AutoRegister("ribbit_sorcerer_spawn_egg")
     public static final AutoRegisterItem RIBBIT_SORCERER_SPAWN_EGG = AutoRegisterItem.of(
             () -> new RibbitSpawnEggItem(RibbitProfessionModule.SORCERER,
-                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_sorcerer_spawn_egg"))
+                    new Item.Properties().setId(RegisterHelper.itemKey("ribbit_sorcerer_spawn_egg")).spawnEgg(EntityTypeModule.RIBBIT.get())
             )
     );
 

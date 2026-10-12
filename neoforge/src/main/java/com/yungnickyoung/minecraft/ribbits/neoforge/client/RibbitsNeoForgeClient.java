@@ -6,11 +6,8 @@ import com.yungnickyoung.minecraft.ribbits.client.model.SupporterHatModel;
 import com.yungnickyoung.minecraft.ribbits.client.particle.RibbitSpellParticle;
 import com.yungnickyoung.minecraft.ribbits.client.render.RibbitRenderer;
 import com.yungnickyoung.minecraft.ribbits.client.screen.RibbitsClothScreen;
-import com.yungnickyoung.minecraft.ribbits.module.BlockModule;
 import com.yungnickyoung.minecraft.ribbits.module.EntityTypeModule;
 import com.yungnickyoung.minecraft.ribbits.module.ParticleTypeModule;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -30,12 +27,7 @@ public class RibbitsNeoForgeClient {
                 IConfigScreenFactory.class,
                 (container, parent) -> RibbitsClothScreen.create(parent)
         );
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.SWAMP_LANTERN.get(), ChunkSectionLayer.CUTOUT);
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.GIANT_LILYPAD.get(), ChunkSectionLayer.CUTOUT);
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.SWAMP_DAISY.get(), ChunkSectionLayer.CUTOUT);
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.TOADSTOOL.get(), ChunkSectionLayer.CUTOUT);
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.UMBRELLA_LEAF.get(), ChunkSectionLayer.CUTOUT);
-        ItemBlockRenderTypes.setRenderLayer(BlockModule.MOSSY_OAK_DOOR.get(), ChunkSectionLayer.CUTOUT);
+        // 26.2 removed ItemBlockRenderTypes: the chunk layer comes from the sprites' transparency (cutout textures -> CUTOUT)
     }
 
     @SubscribeEvent

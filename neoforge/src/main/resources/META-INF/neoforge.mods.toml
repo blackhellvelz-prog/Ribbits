@@ -15,14 +15,14 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/ribbits"
 [[dependencies.ribbits]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.ribbits]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.9,)"
+versionRange = "[26.2,26.3)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -35,7 +35,7 @@ side = "BOTH"
 
 [[dependencies.ribbits]]
 modId = "yungsapi"
-versionRange = "[1.0.0,)"
+versionRange = "[6.1.3-dum1,)"
 type="required"
 ordering="NONE"
 side="BOTH"

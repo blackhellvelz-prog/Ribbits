@@ -1,7 +1,7 @@
 package com.yungnickyoung.minecraft.ribbits.module;
 
 import com.yungnickyoung.minecraft.ribbits.data.RibbitData;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.constant.dataticket.DataTicket;
 
 import java.util.Set;
 

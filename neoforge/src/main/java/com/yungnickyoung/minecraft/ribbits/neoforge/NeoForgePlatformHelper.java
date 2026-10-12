@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FireBlock;
+import com.yungnickyoung.minecraft.ribbits.mixin.mixins.accessor.FireBlockAccessor;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
@@ -20,8 +20,7 @@ import java.util.List;
 public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public void setBlockAsFlammable(Block block, int igniteChance, int burnChance) {
-        FireBlock fireBlock = (FireBlock) Blocks.FIRE;
-        fireBlock.setFlammable(block, igniteChance, burnChance);
+        ((FireBlockAccessor) Blocks.FIRE).ribbits$setFlammable(block, igniteChance, burnChance);
     }
 
 

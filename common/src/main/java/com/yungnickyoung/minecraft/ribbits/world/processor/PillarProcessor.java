@@ -3,9 +3,7 @@ package com.yungnickyoung.minecraft.ribbits.world.processor;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.yungnickyoung.minecraft.ribbits.module.StructureProcessorTypeModule;
 import com.yungnickyoung.minecraft.yungsapi.api.world.randomize.BlockStateRandomizer;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.WorldGenRegion;
@@ -17,12 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 
-@MethodsReturnNonnullByDefault
-public class PillarProcessor extends StructureProcessor {
+public class PillarProcessor implements StructureProcessor {
     public static final MapCodec<PillarProcessor> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
                     BlockState.CODEC.fieldOf("target_block").forGetter(config -> config.targetBlock),
@@ -47,15 +43,16 @@ public class PillarProcessor extends StructureProcessor {
     }
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
+    public StructureTemplate.StructureBlockInfo process(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
                                                              StructureTemplate.StructureBlockInfo blockInfoLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
-                                                             StructurePlaceSettings structurePlacementData) {
+                                                             StructurePlaceSettings structurePlacementData,
+                                                             StructureTemplate template) {
         if (blockInfoGlobal.state().is(this.targetBlock.getBlock())) {
             if (levelReader instanceof WorldGenRegion worldGenRegion
-                    && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
+                    && !worldGenRegion.getCenter().equals(ChunkPos.containing(blockInfoGlobal.pos()))) {
                 return blockInfoGlobal;
             }
 
@@ -85,11 +82,7 @@ public class PillarProcessor extends StructureProcessor {
 
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return StructureProcessorTypeModule.PILLAR_PROCESSOR;
-    }
-
-    public static MapCodec<PillarProcessor> codec() {
+    public MapCodec<? extends StructureProcessor> codec() {
         return CODEC;
     }
 }

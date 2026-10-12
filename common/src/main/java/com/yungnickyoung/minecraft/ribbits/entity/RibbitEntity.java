@@ -40,15 +40,15 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animatable.processing.AnimationTest;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationTest;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -771,7 +771,7 @@ public class RibbitEntity extends AgeableMob implements
         long l = this.lastRestockGameTime + 12000L;
         long m = this.level().getGameTime();
         boolean bl = m > l;
-        long n = this.level().getDayTime();
+        long n = this.level().getOverworldClockTime();
         if (this.lastRestockCheckDayTime > 0L) {
             long p = n / 24000L;
             long o = this.lastRestockCheckDayTime / 24000L;
@@ -839,7 +839,7 @@ public class RibbitEntity extends AgeableMob implements
 
     @Override
     public boolean stillValid(Player player) {
-        return this.getTradingPlayer() == player && this.isAlive() && player.canInteractWithEntity(this, 4.0D);
+        return this.getTradingPlayer() == player && this.isAlive() && player.isWithinEntityInteractionRange(this, 4.0D);
     }
 
     @Override
@@ -858,7 +858,7 @@ public class RibbitEntity extends AgeableMob implements
             return new ItemStack(ItemModule.RIBBIT_SORCERER_SPAWN_EGG.get());
         }
 
-        SpawnEggItem spawnEggItem = SpawnEggItem.byId(this.getType());
-        return spawnEggItem == null ? null : new ItemStack(spawnEggItem);
+        // 26.2: byId looks the egg up by its ENTITY_DATA component
+        return SpawnEggItem.byId(this.getType()).map(holder -> new ItemStack(holder.value())).orElse(null);
     }
 }

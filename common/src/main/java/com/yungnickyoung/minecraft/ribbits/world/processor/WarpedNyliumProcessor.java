@@ -1,8 +1,6 @@
 package com.yungnickyoung.minecraft.ribbits.world.processor;
 
 import com.mojang.serialization.MapCodec;
-import com.yungnickyoung.minecraft.ribbits.module.StructureProcessorTypeModule;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
@@ -11,7 +9,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.material.Fluids;
 
@@ -19,20 +16,20 @@ import net.minecraft.world.level.material.Fluids;
  * Replaces warped nylium with grass block if no water present.
  * If water is present, then it remains as water.
  */
-@MethodsReturnNonnullByDefault
-public class WarpedNyliumProcessor extends StructureProcessor {
+public class WarpedNyliumProcessor implements StructureProcessor {
     public static final WarpedNyliumProcessor INSTANCE = new WarpedNyliumProcessor();
     public static final MapCodec<WarpedNyliumProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
+    public StructureTemplate.StructureBlockInfo process(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
                                                              StructureTemplate.StructureBlockInfo blockInfoLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
-                                                             StructurePlaceSettings structurePlacementData) {
+                                                             StructurePlaceSettings structurePlacementData,
+                                                             StructureTemplate template) {
         if (blockInfoGlobal.state().is(Blocks.WARPED_NYLIUM)) {
-            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(new ChunkPos(blockInfoGlobal.pos()))) {
+            if (levelReader instanceof WorldGenRegion worldGenRegion && !worldGenRegion.getCenter().equals(ChunkPos.containing(blockInfoGlobal.pos()))) {
                 return blockInfoGlobal;
             }
 
@@ -54,11 +51,7 @@ public class WarpedNyliumProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return StructureProcessorTypeModule.WARPED_NYLIUM_PROCESSOR;
-    }
-
-    public static MapCodec<WarpedNyliumProcessor> codec() {
+    public MapCodec<? extends StructureProcessor> codec() {
         return CODEC;
     }
 }

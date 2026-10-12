@@ -1,8 +1,7 @@
 package com.yungnickyoung.minecraft.ribbits.world.processor;
 
 import com.mojang.serialization.MapCodec;
-import com.yungnickyoung.minecraft.ribbits.module.StructureProcessorTypeModule;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,7 +10,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,17 +17,18 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Fills brewing stands with ingredients and potions.
  */
-public class BrewingStandProcessor extends StructureProcessor {
+public class BrewingStandProcessor implements StructureProcessor {
     public static final BrewingStandProcessor INSTANCE = new BrewingStandProcessor();
     public static final MapCodec<BrewingStandProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
+    public StructureTemplate.StructureBlockInfo process(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
                                                              StructureTemplate.StructureBlockInfo blockInfoLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
-                                                             StructurePlaceSettings structurePlacementData) {
+                                                             StructurePlaceSettings structurePlacementData,
+                                                             StructureTemplate template) {
         if (blockInfoGlobal.state().getBlock() == Blocks.BREWING_STAND) {
             RandomSource randomSource = structurePlacementData.getRandom(blockInfoGlobal.pos());
             CompoundTag tag = blockInfoGlobal.nbt();
@@ -52,11 +51,7 @@ public class BrewingStandProcessor extends StructureProcessor {
 
 
     @Override
-    protected @NotNull StructureProcessorType<?> getType() {
-        return StructureProcessorTypeModule.BREWING_STAND_PROCESSOR;
-    }
-
-    public static MapCodec<BrewingStandProcessor> codec() {
+    public MapCodec<? extends StructureProcessor> codec() {
         return CODEC;
     }
 

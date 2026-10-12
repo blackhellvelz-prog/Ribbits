@@ -32,7 +32,7 @@ public abstract class ItemInHandRendererMixin {
     @Shadow
     public abstract void renderItem(LivingEntity livingEntity, ItemStack itemStack, ItemDisplayContext itemDisplayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i);
 
-    @Inject(method = "renderArmWithItem",
+    @Inject(method = "submitArmWithItem", // 26.2 name of renderArmWithItem (same parameters)
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER),
             cancellable = true)
     private void ribbits$renderArmWithItem(AbstractClientPlayer player, float partialTick, float interpPitch,

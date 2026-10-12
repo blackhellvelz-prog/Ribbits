@@ -2,10 +2,9 @@
   "required": true,
   "package": "com.yungnickyoung.minecraft.ribbits.mixin.mixins",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "ribbits-common-common-refmap.json",
   "mixins": [
-    "BeardifierMixin",
     "accessor.DoorBlockAccessor",
+    "accessor.FireBlockAccessor"
   ],
   "client": [
     "client.accessor.ClientLevelAccessor",

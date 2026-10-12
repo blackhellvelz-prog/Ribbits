@@ -16,11 +16,16 @@ public class GeoIP {
     private static Boolean inChina = null;
     private static boolean checked = false;
 
+    /**
+     * дум port: no network request. Upstream asks https://ip-api.com for the player's country on every client start
+     * (sending the player's IP to a third party) only to show one China-specific config toggle; ip-api's free plan
+     * has no HTTPS and answers 403, so upstream always ends with isInChina() == false and an ERROR in the log.
+     * Same observable result here, without the request.
+     */
     public static void init() {
         if (checked) return;
         checked = true;
-
-        new Thread(() -> inChina = checkChina(), "GeoIP-Check").start();
+        inChina = false;
     }
 
     public static boolean isInChina() {

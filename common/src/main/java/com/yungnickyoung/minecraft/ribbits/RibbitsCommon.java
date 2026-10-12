@@ -3,7 +3,7 @@ package com.yungnickyoung.minecraft.ribbits;
 import com.yungnickyoung.minecraft.ribbits.module.ConfigModule;
 import com.yungnickyoung.minecraft.ribbits.module.NetworkModule;
 import com.yungnickyoung.minecraft.yungsapi.api.YungAutoRegister;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public class RibbitsCommon {
         NetworkModule.init();
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

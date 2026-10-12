@@ -7,18 +7,19 @@ import com.yungnickyoung.minecraft.ribbits.entity.RibbitEntity;
 import com.yungnickyoung.minecraft.ribbits.module.DataTicketModule;
 import com.yungnickyoung.minecraft.ribbits.module.RibbitInstrumentModule;
 import com.yungnickyoung.minecraft.ribbits.module.RibbitProfessionModule;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animatable.processing.AnimationState;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RibbitModel extends GeoModel<RibbitEntity> {
-    private static final ResourceLocation TEXTURE = RibbitsCommon.id("textures/entity/ribbit.png");
-    private static final ResourceLocation ANIMATIONS = RibbitsCommon.id("ribbit");
+    private static final Identifier TEXTURE = RibbitsCommon.id("textures/entity/ribbit.png");
+    private static final Identifier ANIMATIONS = RibbitsCommon.id("ribbit");
     private static final Map<Object, Set<String>> PROFESSION_BONES = Map.of(
             RibbitProfessionModule.GARDENER, Set.of("watering_can", "gardener_hat"),
             RibbitProfessionModule.SORCERER, Set.of("sourcerer_hat"),
@@ -54,30 +55,41 @@ public class RibbitModel extends GeoModel<RibbitEntity> {
             "pride"
     );
 
+    private static final Set<String> TOGGLED_BONES = Stream.concat(
+            Stream.of("body_default", "body_merchant"), ALL_DYNAMIC_BONES.stream()).collect(Collectors.toUnmodifiableSet());
+
     @Override
-    public ResourceLocation getModelResource(GeoRenderState renderState) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return RibbitsCommon.id("ribbit_master");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GeoRenderState renderState) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(RibbitEntity animatable) {
+    public Identifier getAnimationResource(RibbitEntity animatable) {
         return ANIMATIONS;
     }
 
-    @Override
-    public void setCustomAnimations(AnimationState<RibbitEntity> state) {
-        RibbitData data = state.getData(DataTicketModule.DT_RIBBIT_DATA);
-        boolean playingInstrument = Boolean.TRUE.equals(state.getData(DataTicketModule.DT_PLAYING_INSTRUMENT));
-        boolean umbrellaFalling = Boolean.TRUE.equals(state.getData(DataTicketModule.DT_UMBRELLA_FALLING));
-        boolean inRain = Boolean.TRUE.equals(state.getData(DataTicketModule.DT_IN_RAIN));
-        boolean isPride = Boolean.TRUE.equals(state.getData(DataTicketModule.DT_IS_PRIDE_RIBBIT));
+    /**
+     * The bones that should be visible for this render state (GeckoLib 5.5: applied per render pass through bone
+     * snapshots by {@link com.yungnickyoung.minecraft.ribbits.client.render.RibbitRenderer}, instead of toggling the
+     * shared model's bones in setCustomAnimations).
+     */
+    public static Set<String> visibleBones(GeoRenderState state) {
+        RibbitData data = state.getGeckolibData(DataTicketModule.DT_RIBBIT_DATA);
+        boolean playingInstrument = Boolean.TRUE.equals(state.getGeckolibData(DataTicketModule.DT_PLAYING_INSTRUMENT));
+        boolean umbrellaFalling = Boolean.TRUE.equals(state.getGeckolibData(DataTicketModule.DT_UMBRELLA_FALLING));
+        boolean inRain = Boolean.TRUE.equals(state.getGeckolibData(DataTicketModule.DT_IN_RAIN));
+        boolean isPride = Boolean.TRUE.equals(state.getGeckolibData(DataTicketModule.DT_IS_PRIDE_RIBBIT));
 
         Set<String> desired = new HashSet<>(8);
+        if (data == null) {
+            desired.add("body_default");
+            return desired;
+        }
 
         if (data.getProfession().equals(RibbitProfessionModule.MERCHANT)) {
             desired.add("body_merchant");
@@ -106,40 +118,11 @@ public class RibbitModel extends GeoModel<RibbitEntity> {
                 });
             }
         }
-
-        Set<String> currently = (Set<String>) state.getDataOrDefault(
-                DataTicketModule.DT_VISIBLE_BONES,
-                new HashSet<>()
-        );
-
-        if (currently.isEmpty()) {
-            hideBone("body_default");
-            hideBone("body_merchant");
-            ALL_DYNAMIC_BONES.forEach(this::hideBone);
-        }
-
-        for (String prev : new HashSet<>(currently)) {
-            if (!desired.contains(prev)) {
-                hideBone(prev);
-                currently.remove(prev);
-            }
-        }
-
-        for (String need : desired) {
-            if (!currently.contains(need)) {
-                showBone(need);
-                currently.add(need);
-            }
-        }
-
-        state.setData(DataTicketModule.DT_VISIBLE_BONES, currently);
+        return desired;
     }
 
-    private void hideBone(String name) {
-        getBone(name).ifPresent(b -> b.setHidden(true));
-    }
-
-    private void showBone(String name) {
-        getBone(name).ifPresent(b -> b.setHidden(false));
+    /** Every bone whose visibility {@link #visibleBones} decides. */
+    public static Set<String> toggledBones() {
+        return TOGGLED_BONES;
     }
 }

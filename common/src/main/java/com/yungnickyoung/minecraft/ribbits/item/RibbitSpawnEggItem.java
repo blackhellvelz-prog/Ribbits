@@ -41,11 +41,6 @@ public class RibbitSpawnEggItem extends SpawnEggItem {
     }
 
     @Override
-    public @Nullable EntityType<?> getType(ItemStack itemStack) {
-        return EntityTypeModule.RIBBIT.get();
-    }
-
-    @Override
     public InteractionResult useOn(UseOnContext ctx) {
         Level level = ctx.getLevel();
         if (!(level instanceof ServerLevel)) return InteractionResult.SUCCESS;
@@ -54,7 +49,7 @@ public class RibbitSpawnEggItem extends SpawnEggItem {
         BlockPos clicked = ctx.getClickedPos();
         Direction face = ctx.getClickedFace();
         BlockState state = level.getBlockState(clicked);
-        EntityType<?> type = this.getType(stack);
+        EntityType<?> type = SpawnEggItem.getType(stack);
 
         if (state.is(Blocks.SPAWNER)) {
             BlockEntity be = level.getBlockEntity(clicked);
@@ -98,7 +93,7 @@ public class RibbitSpawnEggItem extends SpawnEggItem {
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, hit.getDirection(), stack))
             return InteractionResult.FAIL;
 
-        EntityType<?> type = this.getType(stack);
+        EntityType<?> type = SpawnEggItem.getType(stack);
         RibbitEntity ribbit = (RibbitEntity) type.spawn((ServerLevel) level, stack, player,
                 pos, EntitySpawnReason.SPAWN_ITEM_USE, false, false);
         if (ribbit == null) return InteractionResult.PASS;

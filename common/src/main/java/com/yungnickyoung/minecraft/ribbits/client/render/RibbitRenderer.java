@@ -1,19 +1,20 @@
 package com.yungnickyoung.minecraft.ribbits.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.yungnickyoung.minecraft.ribbits.client.model.RibbitModel;
 import com.yungnickyoung.minecraft.ribbits.data.RibbitData;
 import com.yungnickyoung.minecraft.ribbits.entity.RibbitEntity;
 import com.yungnickyoung.minecraft.ribbits.module.DataTicketModule;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.resources.Identifier;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
+
+import java.util.Set;
 
 public class RibbitRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<RibbitEntity, R> {
 
@@ -31,22 +32,24 @@ public class RibbitRenderer<R extends LivingEntityRenderState & GeoRenderState> 
         renderState.addGeckolibData(DataTicketModule.DT_IS_PRIDE_RIBBIT, animatable.isPrideRibbit());
     }
 
+    /** GeckoLib 5.5: bone visibility is set per render pass on the bone snapshots (hidden bones hide their children). */
     @Override
-    public void renderBone(R renderState, PoseStack poseStack, GeoBone bone, VertexConsumer buffer,
-                           CameraRenderState cameraState, int packedLight, int packedOverlay, int renderColor) {
-        if ("instrument".equals(bone.getName())) {
-            bone.setHidden(true);
+    public void adjustModelBonesForRender(RenderPassInfo<R> renderPassInfo, BoneSnapshots snapshots) {
+        Set<String> visible = RibbitModel.visibleBones(renderPassInfo.renderState());
+        for (String bone : RibbitModel.toggledBones()) {
+            boolean hide = !visible.contains(bone);
+            snapshots.ifPresent(bone, snapshot -> snapshot.skipRender(hide).skipChildrenRender(hide));
         }
-        super.renderBone(renderState, poseStack, bone, buffer, cameraState, packedLight, packedOverlay, renderColor);
+        snapshots.ifPresent("instrument", snapshot -> snapshot.skipRender(true).skipChildrenRender(true));
     }
 
     @Override
-    public RenderType getRenderType(R renderState, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
+    public RenderType getRenderType(R renderState, Identifier texture) {
+        return RenderTypes.entityCutout(texture); // 26.2: entity_cutout has cull disabled (old entityCutoutNoCull)
     }
 
     @Override
-    public ResourceLocation getTextureLocation(R renderState) {
+    public Identifier getTextureLocation(R renderState) {
         return super.getTextureLocation(renderState);
     }
 
