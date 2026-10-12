@@ -6,7 +6,7 @@ release and is not supported by the original authors — please report problems 
 When an official 26.2 version appears, use that one.
 
 License: GNU LGPL v3 (unchanged, see `LICENSE.txt`). Only the NeoForge side was ported; the Fabric module is untouched.
-Requires the 26.2 port of YUNG's API (6.1.3-dum1), GeckoLib 5.5, Architectury and Cloth Config.
+Requires the 26.2 port of YUNG's API (6.1.3-dum2), GeckoLib 5.5, Architectury and Cloth Config.
 
 ## What changed
 - 26.2 API renames (`ResourceLocation` → `Identifier`, `read/writeIdentifier`, `getOverworldClockTime`,
